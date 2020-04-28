@@ -1,0 +1,41 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  annotations:
+    app.openshift.io/vcs-ref: master
+    app.openshift.io/vcs-uri: https://github.com/aditi10/bluegreen.git
+    openshift.io/host.generated: "true"
+  creationTimestamp: "2020-04-28T07:59:41Z"
+  labels:
+    app: blue
+    app.kubernetes.io/component: blue
+    app.kubernetes.io/instance: blue
+    app.kubernetes.io/name: php
+    app.kubernetes.io/part-of: blue
+    app.openshift.io/runtime: php
+    app.openshift.io/runtime-version: "7.2"
+  name: blue
+  namespace: vp-bluegreen
+  resourceVersion: "39850388"
+  selfLink: /apis/route.openshift.io/v1/namespaces/vp-bluegreen/routes/blue
+  uid: 36e459b2-8926-11ea-9257-0a580a82000a
+spec:
+  host: blue-vp-bluegreen.apps.ocp-na2.prod.nextcle.com
+  port:
+    targetPort: 8080-tcp
+  subdomain: ""
+  to:
+    kind: Service
+    name: blue
+    weight: 100
+  wildcardPolicy: None
+status:
+  ingress:
+  - conditions:
+    - lastTransitionTime: "2020-04-28T07:59:41Z"
+      status: "True"
+      type: Admitted
+    host: blue-vp-bluegreen.apps.ocp-na2.prod.nextcle.com
+    routerCanonicalHostname: apps.ocp-na2.prod.nextcle.com
+    routerName: default
+    wildcardPolicy: None
