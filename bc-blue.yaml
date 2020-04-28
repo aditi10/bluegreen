@@ -1,0 +1,372 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    k8s.v1.cni.cncf.io/networks-status: ""
+    kubernetes.io/limit-ranger: 'LimitRanger plugin set: cpu, memory request for container
+      sti-build; cpu, memory limit for container sti-build; cpu, memory request for
+      init container git-clone; cpu, memory limit for init container git-clone; cpu,
+      memory request for init container manage-dockerfile; cpu, memory limit for init
+      container manage-dockerfile'
+    openshift.io/build.name: blue-1
+    openshift.io/scc: privileged
+  creationTimestamp: "2020-04-28T07:59:41Z"
+  labels:
+    openshift.io/build.name: blue-1
+  name: blue-1-build
+  namespace: vp-bluegreen
+  ownerReferences:
+  - apiVersion: build.openshift.io/v1
+    controller: true
+    kind: Build
+    name: blue-1
+    uid: 36d8af7d-8926-11ea-9257-0a580a82000a
+  resourceVersion: "39851615"
+  selfLink: /api/v1/namespaces/vp-bluegreen/pods/blue-1-build
+  uid: 36ff4031-8926-11ea-b15f-0e18b0a4b171
+spec:
+  containers:
+  - args:
+    - --loglevel=0
+    command:
+    - openshift-sti-build
+    env:
+    - name: BUILD
+      value: |
+        {"kind":"Build","apiVersion":"build.openshift.io/v1","metadata":{"name":"blue-1","namespace":"vp-bluegreen","selfLink":"/apis/build.openshift.io/v1/namespaces/vp-bluegreen/builds/blue-1","uid":"36d8af7d-8926-11ea-9257-0a580a82000a","resourceVersion":"39850379","creationTimestamp":"2020-04-28T07:59:41Z","labels":{"app":"blue","app.kubernetes.io/component":"blue","app.kubernetes.io/instance":"blue","app.kubernetes.io/name":"php","app.kubernetes.io/part-of":"blue","app.openshift.io/runtime":"php","app.openshift.io/runtime-version":"7.2","buildconfig":"blue","openshift.io/build-config.name":"blue","openshift.io/build.start-policy":"Serial"},"annotations":{"openshift.io/build-config.name":"blue","openshift.io/build.number":"1"},"ownerReferences":[{"apiVersion":"build.openshift.io/v1","kind":"BuildConfig","name":"blue","uid":"36adbba0-8926-11ea-9257-0a580a82000a","controller":true}]},"spec":{"serviceAccount":"builder","source":{"type":"Git","git":{"uri":"https://github.com/aditi10/bluegreen.git","ref":"master"},"contextDir":"/"},"strategy":{"type":"Source","sourceStrategy":{"from":{"kind":"DockerImage","name":"image-registry.openshift-image-registry.svc:5000/openshift/php@sha256:a5aaaae5baf98cb674ac2352429e0450591b45d3674e44c516612a9ee67282d5"},"pullSecret":{"name":"builder-dockercfg-4dk6n"}}},"output":{"to":{"kind":"DockerImage","name":"image-registry.openshift-image-registry.svc:5000/vp-bluegreen/blue:latest"},"pushSecret":{"name":"builder-dockercfg-4dk6n"}},"resources":{},"postCommit":{},"nodeSelector":null,"triggeredBy":[{"message":"Image change","imageChangeBuild":{"imageID":"image-registry.openshift-image-registry.svc:5000/openshift/php@sha256:a5aaaae5baf98cb674ac2352429e0450591b45d3674e44c516612a9ee67282d5","fromRef":{"kind":"ImageStreamTag","namespace":"openshift","name":"php:7.2"}}}]},"status":{"phase":"New","outputDockerImageReference":"image-registry.openshift-image-registry.svc:5000/vp-bluegreen/blue:latest","config":{"kind":"BuildConfig","namespace":"vp-bluegreen","name":"blue"},"output":{}}}
+    - name: LANG
+      value: en_US.utf8
+    - name: SOURCE_REPOSITORY
+      value: https://github.com/aditi10/bluegreen.git
+    - name: SOURCE_URI
+      value: https://github.com/aditi10/bluegreen.git
+    - name: SOURCE_CONTEXT_DIR
+      value: /
+    - name: SOURCE_REF
+      value: master
+    - name: ALLOWED_UIDS
+      value: 1-
+    - name: DROP_CAPS
+      value: KILL,MKNOD,SETGID,SETUID
+    - name: PUSH_DOCKERCFG_PATH
+      value: /var/run/secrets/openshift.io/push
+    - name: PULL_DOCKERCFG_PATH
+      value: /var/run/secrets/openshift.io/pull
+    - name: BUILD_REGISTRIES_CONF_PATH
+      value: /var/run/configs/openshift.io/build-system/registries.conf
+    - name: BUILD_REGISTRIES_DIR_PATH
+      value: /var/run/configs/openshift.io/build-system/registries.d
+    - name: BUILD_SIGNATURE_POLICY_PATH
+      value: /var/run/configs/openshift.io/build-system/policy.json
+    - name: BUILD_STORAGE_CONF_PATH
+      value: /var/run/configs/openshift.io/build-system/storage.conf
+    - name: BUILD_STORAGE_DRIVER
+      value: overlay
+    - name: BUILD_ISOLATION
+      value: chroot
+    - name: BUILD_BLOBCACHE_DIR
+      value: /var/cache/blobs
+    - name: HTTP_PROXY
+    - name: HTTPS_PROXY
+    - name: NO_PROXY
+    image: quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:bb70e52ea99fcd69574cf1728c0645a8409078d9440378641e3184af921c1022
+    imagePullPolicy: IfNotPresent
+    name: sti-build
+    resources:
+      limits:
+        cpu: 500m
+        memory: 1536Mi
+      requests:
+        cpu: 5m
+        memory: 50Mi
+    securityContext:
+      privileged: true
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: FallbackToLogsOnError
+    volumeMounts:
+    - mountPath: /tmp/build
+      name: buildworkdir
+    - mountPath: /var/lib/containers/cache
+      name: buildcachedir
+    - mountPath: /var/run/secrets/openshift.io/push
+      name: builder-dockercfg-4dk6n-push
+      readOnly: true
+    - mountPath: /var/run/secrets/openshift.io/pull
+      name: builder-dockercfg-4dk6n-pull
+      readOnly: true
+    - mountPath: /var/run/configs/openshift.io/build-system
+      name: build-system-configs
+      readOnly: true
+    - mountPath: /var/run/configs/openshift.io/certs
+      name: build-ca-bundles
+    - mountPath: /etc/pki/ca-trust/extracted/pem
+      name: build-proxy-ca-bundles
+    - mountPath: /var/lib/containers/storage
+      name: container-storage-root
+    - mountPath: /var/cache/blobs
+      name: build-blob-cache
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: builder-token-6zlmp
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  imagePullSecrets:
+  - name: builder-dockercfg-4dk6n
+  initContainers:
+  - args:
+    - --loglevel=0
+    command:
+    - openshift-git-clone
+    env:
+    - name: BUILD
+      value: |
+        {"kind":"Build","apiVersion":"build.openshift.io/v1","metadata":{"name":"blue-1","namespace":"vp-bluegreen","selfLink":"/apis/build.openshift.io/v1/namespaces/vp-bluegreen/builds/blue-1","uid":"36d8af7d-8926-11ea-9257-0a580a82000a","resourceVersion":"39850379","creationTimestamp":"2020-04-28T07:59:41Z","labels":{"app":"blue","app.kubernetes.io/component":"blue","app.kubernetes.io/instance":"blue","app.kubernetes.io/name":"php","app.kubernetes.io/part-of":"blue","app.openshift.io/runtime":"php","app.openshift.io/runtime-version":"7.2","buildconfig":"blue","openshift.io/build-config.name":"blue","openshift.io/build.start-policy":"Serial"},"annotations":{"openshift.io/build-config.name":"blue","openshift.io/build.number":"1"},"ownerReferences":[{"apiVersion":"build.openshift.io/v1","kind":"BuildConfig","name":"blue","uid":"36adbba0-8926-11ea-9257-0a580a82000a","controller":true}]},"spec":{"serviceAccount":"builder","source":{"type":"Git","git":{"uri":"https://github.com/aditi10/bluegreen.git","ref":"master"},"contextDir":"/"},"strategy":{"type":"Source","sourceStrategy":{"from":{"kind":"DockerImage","name":"image-registry.openshift-image-registry.svc:5000/openshift/php@sha256:a5aaaae5baf98cb674ac2352429e0450591b45d3674e44c516612a9ee67282d5"},"pullSecret":{"name":"builder-dockercfg-4dk6n"}}},"output":{"to":{"kind":"DockerImage","name":"image-registry.openshift-image-registry.svc:5000/vp-bluegreen/blue:latest"},"pushSecret":{"name":"builder-dockercfg-4dk6n"}},"resources":{},"postCommit":{},"nodeSelector":null,"triggeredBy":[{"message":"Image change","imageChangeBuild":{"imageID":"image-registry.openshift-image-registry.svc:5000/openshift/php@sha256:a5aaaae5baf98cb674ac2352429e0450591b45d3674e44c516612a9ee67282d5","fromRef":{"kind":"ImageStreamTag","namespace":"openshift","name":"php:7.2"}}}]},"status":{"phase":"New","outputDockerImageReference":"image-registry.openshift-image-registry.svc:5000/vp-bluegreen/blue:latest","config":{"kind":"BuildConfig","namespace":"vp-bluegreen","name":"blue"},"output":{}}}
+    - name: LANG
+      value: en_US.utf8
+    - name: SOURCE_REPOSITORY
+      value: https://github.com/aditi10/bluegreen.git
+    - name: SOURCE_URI
+      value: https://github.com/aditi10/bluegreen.git
+    - name: SOURCE_CONTEXT_DIR
+      value: /
+    - name: SOURCE_REF
+      value: master
+    - name: ALLOWED_UIDS
+      value: 1-
+    - name: DROP_CAPS
+      value: KILL,MKNOD,SETGID,SETUID
+    - name: BUILD_REGISTRIES_CONF_PATH
+      value: /var/run/configs/openshift.io/build-system/registries.conf
+    - name: BUILD_REGISTRIES_DIR_PATH
+      value: /var/run/configs/openshift.io/build-system/registries.d
+    - name: BUILD_SIGNATURE_POLICY_PATH
+      value: /var/run/configs/openshift.io/build-system/policy.json
+    - name: BUILD_STORAGE_CONF_PATH
+      value: /var/run/configs/openshift.io/build-system/storage.conf
+    - name: BUILD_BLOBCACHE_DIR
+      value: /var/cache/blobs
+    - name: HTTP_PROXY
+    - name: HTTPS_PROXY
+    - name: NO_PROXY
+    image: quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:bb70e52ea99fcd69574cf1728c0645a8409078d9440378641e3184af921c1022
+    imagePullPolicy: IfNotPresent
+    name: git-clone
+    resources:
+      limits:
+        cpu: 500m
+        memory: 1536Mi
+      requests:
+        cpu: 5m
+        memory: 50Mi
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: FallbackToLogsOnError
+    volumeMounts:
+    - mountPath: /tmp/build
+      name: buildworkdir
+    - mountPath: /var/run/configs/openshift.io/build-system
+      name: build-system-configs
+      readOnly: true
+    - mountPath: /var/run/configs/openshift.io/certs
+      name: build-ca-bundles
+    - mountPath: /etc/pki/ca-trust/extracted/pem
+      name: build-proxy-ca-bundles
+    - mountPath: /var/cache/blobs
+      name: build-blob-cache
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: builder-token-6zlmp
+      readOnly: true
+  - args:
+    - --loglevel=0
+    command:
+    - openshift-manage-dockerfile
+    env:
+    - name: BUILD
+      value: |
+        {"kind":"Build","apiVersion":"build.openshift.io/v1","metadata":{"name":"blue-1","namespace":"vp-bluegreen","selfLink":"/apis/build.openshift.io/v1/namespaces/vp-bluegreen/builds/blue-1","uid":"36d8af7d-8926-11ea-9257-0a580a82000a","resourceVersion":"39850379","creationTimestamp":"2020-04-28T07:59:41Z","labels":{"app":"blue","app.kubernetes.io/component":"blue","app.kubernetes.io/instance":"blue","app.kubernetes.io/name":"php","app.kubernetes.io/part-of":"blue","app.openshift.io/runtime":"php","app.openshift.io/runtime-version":"7.2","buildconfig":"blue","openshift.io/build-config.name":"blue","openshift.io/build.start-policy":"Serial"},"annotations":{"openshift.io/build-config.name":"blue","openshift.io/build.number":"1"},"ownerReferences":[{"apiVersion":"build.openshift.io/v1","kind":"BuildConfig","name":"blue","uid":"36adbba0-8926-11ea-9257-0a580a82000a","controller":true}]},"spec":{"serviceAccount":"builder","source":{"type":"Git","git":{"uri":"https://github.com/aditi10/bluegreen.git","ref":"master"},"contextDir":"/"},"strategy":{"type":"Source","sourceStrategy":{"from":{"kind":"DockerImage","name":"image-registry.openshift-image-registry.svc:5000/openshift/php@sha256:a5aaaae5baf98cb674ac2352429e0450591b45d3674e44c516612a9ee67282d5"},"pullSecret":{"name":"builder-dockercfg-4dk6n"}}},"output":{"to":{"kind":"DockerImage","name":"image-registry.openshift-image-registry.svc:5000/vp-bluegreen/blue:latest"},"pushSecret":{"name":"builder-dockercfg-4dk6n"}},"resources":{},"postCommit":{},"nodeSelector":null,"triggeredBy":[{"message":"Image change","imageChangeBuild":{"imageID":"image-registry.openshift-image-registry.svc:5000/openshift/php@sha256:a5aaaae5baf98cb674ac2352429e0450591b45d3674e44c516612a9ee67282d5","fromRef":{"kind":"ImageStreamTag","namespace":"openshift","name":"php:7.2"}}}]},"status":{"phase":"New","outputDockerImageReference":"image-registry.openshift-image-registry.svc:5000/vp-bluegreen/blue:latest","config":{"kind":"BuildConfig","namespace":"vp-bluegreen","name":"blue"},"output":{}}}
+    - name: LANG
+      value: en_US.utf8
+    - name: SOURCE_REPOSITORY
+      value: https://github.com/aditi10/bluegreen.git
+    - name: SOURCE_URI
+      value: https://github.com/aditi10/bluegreen.git
+    - name: SOURCE_CONTEXT_DIR
+      value: /
+    - name: SOURCE_REF
+      value: master
+    - name: ALLOWED_UIDS
+      value: 1-
+    - name: DROP_CAPS
+      value: KILL,MKNOD,SETGID,SETUID
+    - name: BUILD_REGISTRIES_CONF_PATH
+      value: /var/run/configs/openshift.io/build-system/registries.conf
+    - name: BUILD_REGISTRIES_DIR_PATH
+      value: /var/run/configs/openshift.io/build-system/registries.d
+    - name: BUILD_SIGNATURE_POLICY_PATH
+      value: /var/run/configs/openshift.io/build-system/policy.json
+    - name: BUILD_STORAGE_CONF_PATH
+      value: /var/run/configs/openshift.io/build-system/storage.conf
+    - name: BUILD_BLOBCACHE_DIR
+      value: /var/cache/blobs
+    - name: HTTP_PROXY
+    - name: HTTPS_PROXY
+    - name: NO_PROXY
+    image: quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:bb70e52ea99fcd69574cf1728c0645a8409078d9440378641e3184af921c1022
+    imagePullPolicy: IfNotPresent
+    name: manage-dockerfile
+    resources:
+      limits:
+        cpu: 500m
+        memory: 1536Mi
+      requests:
+        cpu: 5m
+        memory: 50Mi
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: FallbackToLogsOnError
+    volumeMounts:
+    - mountPath: /tmp/build
+      name: buildworkdir
+    - mountPath: /var/run/configs/openshift.io/build-system
+      name: build-system-configs
+      readOnly: true
+    - mountPath: /var/run/configs/openshift.io/certs
+      name: build-ca-bundles
+    - mountPath: /etc/pki/ca-trust/extracted/pem
+      name: build-proxy-ca-bundles
+    - mountPath: /var/cache/blobs
+      name: build-blob-cache
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: builder-token-6zlmp
+      readOnly: true
+  nodeName: ip-10-0-178-84.ec2.internal
+  nodeSelector:
+    kubernetes.io/os: linux
+  priority: 0
+  restartPolicy: Never
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: builder
+  serviceAccountName: builder
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoSchedule
+    key: node.kubernetes.io/memory-pressure
+    operator: Exists
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - hostPath:
+      path: /var/lib/containers/cache
+      type: ""
+    name: buildcachedir
+  - emptyDir: {}
+    name: buildworkdir
+  - name: builder-dockercfg-4dk6n-push
+    secret:
+      defaultMode: 384
+      secretName: builder-dockercfg-4dk6n
+  - name: builder-dockercfg-4dk6n-pull
+    secret:
+      defaultMode: 384
+      secretName: builder-dockercfg-4dk6n
+  - configMap:
+      defaultMode: 420
+      name: blue-1-sys-config
+    name: build-system-configs
+  - configMap:
+      defaultMode: 420
+      items:
+      - key: service-ca.crt
+        path: certs.d/image-registry.openshift-image-registry.svc:5000/ca.crt
+      name: blue-1-ca
+    name: build-ca-bundles
+  - configMap:
+      defaultMode: 420
+      items:
+      - key: ca-bundle.crt
+        path: tls-ca-bundle.pem
+      name: blue-1-global-ca
+    name: build-proxy-ca-bundles
+  - emptyDir: {}
+    name: container-storage-root
+  - emptyDir: {}
+    name: build-blob-cache
+  - name: builder-token-6zlmp
+    secret:
+      defaultMode: 420
+      secretName: builder-token-6zlmp
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2020-04-28T07:59:54Z"
+    reason: PodCompleted
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2020-04-28T08:02:16Z"
+    reason: PodCompleted
+    status: "False"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2020-04-28T08:02:16Z"
+    reason: PodCompleted
+    status: "False"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2020-04-28T07:59:41Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: cri-o://85f97afe18a32f2aaf46f0a623db96bdf2054b9e2ca21f53c6161860600fb36f
+    image: quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:bb70e52ea99fcd69574cf1728c0645a8409078d9440378641e3184af921c1022
+    imageID: quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:bb70e52ea99fcd69574cf1728c0645a8409078d9440378641e3184af921c1022
+    lastState: {}
+    name: sti-build
+    ready: false
+    restartCount: 0
+    state:
+      terminated:
+        containerID: cri-o://85f97afe18a32f2aaf46f0a623db96bdf2054b9e2ca21f53c6161860600fb36f
+        exitCode: 0
+        finishedAt: "2020-04-28T08:02:15Z"
+        reason: Completed
+        startedAt: "2020-04-28T07:59:55Z"
+  hostIP: 10.0.178.84
+  initContainerStatuses:
+  - containerID: cri-o://fa6d65aa6af8b6f5bb981776c19969137882e0b897b03ff7d54bbb5849994a09
+    image: quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:bb70e52ea99fcd69574cf1728c0645a8409078d9440378641e3184af921c1022
+    imageID: quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:bb70e52ea99fcd69574cf1728c0645a8409078d9440378641e3184af921c1022
+    lastState: {}
+    name: git-clone
+    ready: true
+    restartCount: 0
+    state:
+      terminated:
+        containerID: cri-o://fa6d65aa6af8b6f5bb981776c19969137882e0b897b03ff7d54bbb5849994a09
+        exitCode: 0
+        finishedAt: "2020-04-28T07:59:52Z"
+        reason: Completed
+        startedAt: "2020-04-28T07:59:50Z"
+  - containerID: cri-o://270c8910827598c4c9dcfd1ff34e0cf7f7e99c1fb69a0a4de24b752eb87e8f9a
+    image: quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:bb70e52ea99fcd69574cf1728c0645a8409078d9440378641e3184af921c1022
+    imageID: quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:bb70e52ea99fcd69574cf1728c0645a8409078d9440378641e3184af921c1022
+    lastState: {}
+    name: manage-dockerfile
+    ready: true
+    restartCount: 0
+    state:
+      terminated:
+        containerID: cri-o://270c8910827598c4c9dcfd1ff34e0cf7f7e99c1fb69a0a4de24b752eb87e8f9a
+        exitCode: 0
+        finishedAt: "2020-04-28T07:59:53Z"
+        reason: Completed
+        startedAt: "2020-04-28T07:59:53Z"
+  phase: Succeeded
+  podIP: 10.130.8.163
+  qosClass: Burstable
+  startTime: "2020-04-28T07:59:41Z"
